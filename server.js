@@ -6,6 +6,7 @@ import path from 'node:path';
 const root = path.dirname(fileURLToPath(import.meta.url));
 const port = Number(process.env.PORT || 3000);
 const gateway = (process.env.JEV_GATEWAY_URL || 'https://jev-router.app.mintapis.com').replace(/\/$/, '');
+const gatewayKey = process.env.JEV_GATEWAY_API_KEY || '';
 const dailyCap = Number(process.env.DAILY_SPEND_CAP_USD || 2);
 const perMinute = Number(process.env.RATE_LIMIT_PER_MINUTE || 8);
 const maxBody = 12_000;
@@ -64,7 +65,8 @@ const server = http.createServer(async (req, res) => {
       const model = ['classifier-fast','djev','semif-qwen3.5-4b'].includes(input.model) ? input.model : 'classifier-fast';
       if (!subject || message.length < 10) return json(res, 400, { error: 'invalid_input', message: 'Add a subject and at least 10 characters of ticket text.' });
       const started = performance.now();
-      const upstream = await fetch(`${gateway}/v1/systemone`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(requestFor({ subject, message, tier }, model)), signal: AbortSignal.timeout(20_000) });
+      const headers = { 'content-type': 'application/json', ...(gatewayKey ? { authorization: `Bearer ${gatewayKey}` } : {}) };
+      const upstream = await fetch(`${gateway}/v1/systemone`, { method: 'POST', headers, body: JSON.stringify(requestFor({ subject, message, tier }, model)), signal: AbortSignal.timeout(20_000) });
       const data = await upstream.json().catch(() => ({}));
       if (!upstream.ok) return json(res, upstream.status === 429 ? 429 : 502, { error: 'gateway_error', message: data?.attempts?.[0]?.error || data?.error || 'The selected model is temporarily unavailable.' });
       const cost = Number(upstream.headers.get('x-jev-cost-usd') || data?.usage?.estimated_cost_usd || 0);
