@@ -1,8 +1,8 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>Decision Desk — one call, four decisions</title><meta name="description" content="A live support-triage demo for Jev-class decision models."><link rel="stylesheet" href="/style.css"></head>
-<body><header><a class="brand" href="/" aria-label="Decision Desk home"><span class="mark">D</span><span>Decision Desk</span></a><button id="theme" class="icon" aria-label="Toggle color theme">◐</button></header>
+<body><header><a class="brand" href="/" aria-label="Decision Desk home"><span class="mark">D</span><span>Decision Desk</span></a><button id="theme" class="icon" aria-label="Use dark theme" aria-pressed="false">◐</button></header>
 <main><section class="hero"><div class="eyebrow"><i></i> LIVE JEV-CLASS DECISIONS</div><h1>One ticket in.<br><em>Four decisions out.</em></h1><p>Route, prioritize, flag risk, and choose the next action in one structured model call—with confidence, latency, and cost in plain sight.</p></section>
 <section class="workspace">
- <form id="form" class="panel input-panel"><div class="panel-head"><span>Incoming ticket</span><span class="privacy">Not stored</span></div>
+ <form id="form" class="panel input-panel"><div class="panel-head"><span>Incoming ticket</span><span class="privacy" title="Forwarded for this decision only; not written to disk, analytics, logs, or a database.">Not stored</span></div>
   <label>Model<select id="model" name="model"><option value="classifier-fast">Loading gateway models…</option></select></label>
   <div id="modelNote" class="model-note">Checking live availability…</div>
   <label>Subject<input id="subject" name="subject" maxlength="180" value="Charged twice for the same order" required></label>
