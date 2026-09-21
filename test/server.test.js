@@ -1,0 +1,2 @@
+import test from 'node:test'; import assert from 'node:assert/strict'; import { requestFor } from '../server.js';
+test('builds one typed packet with four decisions',()=>{const x=requestFor({subject:'a',message:'b',tier:'pro'},'classifier-fast');assert.equal(x.model,'classifier-fast');assert.deepEqual(Object.keys(x.questions),['route','priority','risk','next_action']);for(const q of Object.values(x.questions)){assert.equal(q.type,'choice');assert.ok(Object.keys(q.criteria).length>=3)}});
