@@ -12,6 +12,9 @@ const perMinute = Number(process.env.RATE_LIMIT_PER_MINUTE || 8);
 const maxBody = 12_000;
 const buckets = new Map();
 let spend = { day: new Date().toISOString().slice(0, 10), usd: 0, decisions: 0 };
+const umamiApiKey = process.env.UMAMI_API_KEY || '';
+const umamiVisitCache = { visits: null, expiresAt: 0 };
+let umamiVisitRequest = null;
 
 function json(res, status, body, headers = {}) {
   res.writeHead(status, { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store', ...headers });
@@ -27,6 +30,38 @@ function allow(ip) {
 function resetDay() {
   const day = new Date().toISOString().slice(0, 10);
   if (spend.day !== day) spend = { day, usd: 0, decisions: 0 };
+}
+async function totalUmamiVisits() {
+  if (!umamiApiKey) return null;
+  const now = Date.now();
+  if (umamiVisitCache.expiresAt > now) return umamiVisitCache.visits;
+  if (!umamiVisitRequest) {
+    umamiVisitRequest = (async () => {
+      try {
+        const url = new URL('https://bh-analytics.app.mintapis.com/api/websites/49c715ed-41f0-4040-8424-69d512844082/stats');
+        url.searchParams.set('startAt', '0');
+        url.searchParams.set('endAt', String(now));
+        const upstream = await fetch(url, {
+          headers: { authorization: 'Bearer ' + umamiApiKey },
+          signal: AbortSignal.timeout(2500)
+        });
+        if (!upstream.ok) throw new Error('umami_unavailable');
+        const data = await upstream.json();
+        if (!Number.isSafeInteger(data.visits) || data.visits < 0) throw new Error('invalid_umami_response');
+        const visits = data.visits;
+        umamiVisitCache.visits = visits;
+        umamiVisitCache.expiresAt = now + 5 * 60_000;
+        return visits;
+      } catch {
+        umamiVisitCache.visits = null;
+        umamiVisitCache.expiresAt = now + 60_000;
+        return null;
+      } finally {
+        umamiVisitRequest = null;
+      }
+    })();
+  }
+  return umamiVisitRequest;
 }
 async function body(req) {
   let raw = '';
@@ -49,6 +84,10 @@ function requestFor(ticket, model) {
 const server = http.createServer(async (req, res) => {
   try {
     if (req.url === '/health') return json(res, 200, { ok: true });
+    if (req.url === '/api/visits' && req.method === 'GET') {
+      const visits = await totalUmamiVisits();
+      return json(res, 200, { visits }, { 'cache-control': 'public, max-age=60, stale-while-revalidate=300' });
+    }
     if (req.url === '/api/models' && req.method === 'GET') {
       const upstream = await fetch(`${gateway}/models`, { signal: AbortSignal.timeout(5000) });
       return json(res, upstream.status, await upstream.json());
