@@ -1,0 +1,96 @@
+{
+  "surface": "app:decision-desk",
+  "items": {
+    "app": {
+      "id": "8cceb0",
+      "kind": "app",
+      "title": "Decision Desk",
+      "summary": "Demonstriert strukturierte Entscheidungen für Supportanfragen. Ein Modellaufruf liefert vier typisierte Antworten mit Wahrscheinlichkeiten.",
+      "parent": null,
+      "url": "https://decision-desk.app.mintapis.com",
+      "selector": "header",
+      "refs": [
+        {
+          "kind": "code",
+          "target": "github:fstandhartinger/decision-desk@HEAD:public/index.html#L2",
+          "label": "UI-Quelltext"
+        }
+      ],
+      "links": [],
+      "access": "public"
+    },
+    "ticket": {
+      "id": "28abdb",
+      "kind": "panel",
+      "title": "Eingehende Supportanfrage",
+      "summary": "Enthält Modellwahl, Betreff und Nachricht für die Entscheidung. Beispielanfragen können die Felder vorbelegen.",
+      "parent": "8cceb0",
+      "url": "https://decision-desk.app.mintapis.com",
+      "selector": ".input-panel",
+      "refs": [
+        {
+          "kind": "code",
+          "target": "github:fstandhartinger/decision-desk@HEAD:public/index.html#L5",
+          "label": "UI-Quelltext"
+        }
+      ],
+      "links": [],
+      "access": "public"
+    },
+    "packet": {
+      "id": "28c867",
+      "kind": "panel",
+      "title": "Entscheidungspaket",
+      "summary": "Zeigt die vier Antworten und Angaben zum Modellaufruf. Wahrscheinlichkeiten helfen beim Erkennen unsicherer Entscheidungen.",
+      "parent": "8cceb0",
+      "url": "https://decision-desk.app.mintapis.com",
+      "selector": ".output-panel",
+      "refs": [
+        {
+          "kind": "code",
+          "target": "github:fstandhartinger/decision-desk@HEAD:public/index.html#L13",
+          "label": "UI-Quelltext"
+        }
+      ],
+      "links": [],
+      "access": "public"
+    },
+    "principles": {
+      "id": "b011ca",
+      "kind": "panel",
+      "title": "Erklärung der Entscheidungsmodelle",
+      "summary": "Erklärt strukturierte Ausgaben und Unsicherheit. Die drei Abschnitte beschreiben den Zweck schmaler Entscheidungsmodelle.",
+      "parent": "8cceb0",
+      "url": "https://decision-desk.app.mintapis.com",
+      "selector": ".explain",
+      "refs": [
+        {
+          "kind": "code",
+          "target": "github:fstandhartinger/decision-desk@HEAD:public/index.html#L15",
+          "label": "UI-Quelltext"
+        }
+      ],
+      "links": [],
+      "access": "public"
+    },
+    "privacy": {
+      "id": "bb37bd",
+      "kind": "page",
+      "title": "Datenschutz bei Decision Desk",
+      "summary": "Erklärt den Umgang mit eingegebenen Supportanfragen und den Betrieb der Demo. Die Seite beschreibt Speicherung, Weiterleitung und Nutzungsgrenzen.",
+      "parent": "8cceb0",
+      "url": "https://decision-desk.app.mintapis.com/privacy.html",
+      "selector": ".privacy-page",
+      "refs": [
+        {
+          "kind": "code",
+          "target": "github:fstandhartinger/decision-desk@HEAD:public/privacy.html#L13",
+          "label": "Datenschutzseite"
+        }
+      ],
+      "links": [],
+      "access": "public"
+    }
+  },
+  "sync_source": "artifacts.manifest.json"
+}
